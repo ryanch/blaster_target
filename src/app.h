@@ -21,7 +21,6 @@ private:
 
     void selectAndSyncTargets();
 
-    //BLTarget getActiveTarget();
 };
 
 #endif // APP_H

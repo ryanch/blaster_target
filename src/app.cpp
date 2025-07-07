@@ -12,8 +12,6 @@ void App::setup() {
 
     randomSeed(analogRead(0));
 
-    //targetOne.startSeekAnimation();
-
     selectAndSyncTargets();
 }
 
@@ -23,20 +21,6 @@ void App::loop() {
     targetTwo.loop();
     targetThree.loop();
 
-
-    /*
-    if ( targetOne.checkForPressSinceLastLoop() ) {
-        targetOne.startSeekAnimation();
-    }
-    else if (  targetTwo.checkForPressSinceLastLoop() ) {
-        targetTwo.startSeekAnimation();
-    }
-    else if (  targetThree.checkForPressSinceLastLoop() ) {
-        targetThree.startSeekAnimation();
-    }
-    */
-
-    
 
     if ( activeTarget == 0 && targetOne.checkForPressSinceLastLoop() ) {
         targetOne.startHitAnimation();
@@ -80,18 +64,3 @@ void App::selectAndSyncTargets() {
     }
 
 }
-
-/*
-BLTarget App::getActiveTarget() {
-    if( activeTarget == 0 ) {
-        return targetOne;
-    }
-    else if( activeTarget == 1 ) {
-        return targetTwo;
-    }
-    else if( activeTarget == 2 ) {
-        return targetThree;
-    }
-    return targetOne;
-}
-    */
