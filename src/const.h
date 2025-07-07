@@ -14,6 +14,9 @@
 #define ANIMATION_SEEK 2
 #define ANIMATION_BLANK 3
 
+#define GAME_MODE_SHOOTING_GALLERY 1
+#define GAME_MODE_ALL_TARGETS_ON 2
+
 #endif // CONST_H
 
 

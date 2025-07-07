@@ -1,6 +1,7 @@
 
 #include <Adafruit_NeoPixel.h>
 #include "bl_target.h"
+#include "const.h"
 
 #ifndef APP_H
 #define APP_H
@@ -18,6 +19,8 @@ private:
     BLTarget targetThree;
 
     int activeTarget;
+
+    int gameMode = GAME_MODE_SHOOTING_GALLERY;
 
     void selectAndSyncTargets();
 
