@@ -1,5 +1,25 @@
+#include <Arduino.h>
+
+#include "app.h"
+App G_APP;
+
+
+void setup() {
+  Serial.begin(115200);
+  Serial.println("outer Setup");
+  G_APP.setup();
+}
+
+void loop() {
+  G_APP.loop();
+  delay(10); 
+}
+
+
+/*
 #include <Adafruit_NeoPixel.h>
 
+#include "bl_target.h"
 
 #define MAX_COUNT 8
 
@@ -8,6 +28,8 @@
 #define BRIGHTNESS 250 
 
 Adafruit_NeoPixel strip(LED_COUNT, LED_PIN, NEO_RGB + NEO_KHZ800);
+
+BlTarget mainTarget();
 
 #define BUTTON_PIN 25
 
@@ -148,11 +170,11 @@ void onButton() {
 
 
 
-/**
---------------------------------
-Setup Mode
---------------------------------
-**/
+
+//--------------------------------
+//Setup Mode
+//--------------------------------
+
 
 void prepForSetup() {
   setupStartTime = millis();
@@ -248,14 +270,18 @@ void handleCheckExitSetup() {
 }
 
 
-/**
---------------------------------
-Single Target Mode
---------------------------------
-**/
+
+//--------------------------------
+//Single Target Mode
+//--------------------------------
+
 
 // this is called when button is pressed while in single target mode
 void handleButtonWhileInSingleTargetMode() {
+
+
+
+  
   ledCount++;
   if (ledCount > MAX_COUNT) ledCount = 0; 
   Serial.println("The button is pressed");
@@ -264,6 +290,7 @@ void handleButtonWhileInSingleTargetMode() {
   // setup to flash
   hitFlashAnimationStartTime = millis();
   flashAnimationFrame = 0;
+  
 
 }
 
@@ -307,11 +334,11 @@ void syncLedWithHitCount() {
 
 
 
-/**
---------------------------------
-Group Target Mode
---------------------------------
-**/
+
+//--------------------------------
+//Group Target Mode
+//--------------------------------
+
 
 // this is called when button is pressed while in group mode
 void handleButtonWhileInGroupTargetMode() {
@@ -456,3 +483,5 @@ void animateForGroupTarget() {
   strip.show();
 
 }
+
+*/

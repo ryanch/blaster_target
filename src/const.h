@@ -1,0 +1,19 @@
+// my_class.h
+#ifndef CONST_H
+#define CONST_H
+
+#define G_LED_COUNT 8
+
+#define DEBOUNCE_DELAY 50
+
+#define LONG_BUTTON_PRESS_MS 4000
+
+#define BRIGHTNESS 250
+
+#define ANIMATION_HIT 1
+#define ANIMATION_SEEK 2
+#define ANIMATION_BLANK 3
+
+#endif // CONST_H
+
+
