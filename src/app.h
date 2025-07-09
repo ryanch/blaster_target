@@ -32,6 +32,8 @@ private:
 
     void setupForGameMode(int mode);
 
+    int proposedGameMode = 0;
+
 };
 
 #endif // APP_H
