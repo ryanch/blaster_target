@@ -18,6 +18,8 @@ private:
     BLTarget targetTwo;
     BLTarget targetThree;
 
+    int proposedGameMode = 0;
+
     int activeTarget;
 
     int targetsHit = 0;
@@ -32,7 +34,9 @@ private:
 
     void setupForGameMode(int mode);
 
-    int proposedGameMode = 0;
+
+
+    void syncGameModeSelection();
 
 };
 

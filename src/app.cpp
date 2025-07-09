@@ -43,9 +43,20 @@ void App::setupForGameMode(int mode) {
         targetTwo.startBlankAnimation();
         targetThree.startBlankAnimation();
         gameMode = GAME_MODE_SETUP;
-        targetOne.startLedCountAnimation( proposedGameMode, 8 );
+        syncGameModeSelection();
     }
 
+}
+
+
+void App::syncGameModeSelection() {
+        // set the game mode display
+        if ( proposedGameMode == GAME_MODE_ALL_TARGETS_ON ) {
+            targetOne.startLedCountAnimation( YELLOW_COLOR, 8 );
+        }
+        else if ( proposedGameMode == GAME_MODE_SHOOTING_GALLERY ) {
+            targetOne.startSeekAnimation();
+        }
 }
 
 void App::loop() {
@@ -73,8 +84,10 @@ void App::loop() {
             if ( proposedGameMode >= MAX_MODES ) {
                 proposedGameMode = 0;
             }
-            targetOne.startLedCountAnimation( proposedGameMode, 8 );
+            syncGameModeSelection();
         }
+
+
     }
 
 
