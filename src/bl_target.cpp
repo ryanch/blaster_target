@@ -13,6 +13,9 @@ void BLTarget::setup(int pin, int ledPin) {
     pinMode(buttonPin, INPUT_PULLUP);
 }
 
+
+
+
 void BLTarget::loop() {
 
 
@@ -47,17 +50,26 @@ void BLTarget::loop() {
 
 
     // goto next animation frame
-    if (millis() - lastFrameTime >= 500) {
+    if (millis() - lastFrameTime >= animationStepTime) {
         animationFrame++;
         lastFrameTime = millis();
     }
 
     // do animations
 
+    if ( animationType == ANIMATION_COUNT ){
+
+        int countToShow = animationFrame;
+        if ( animationFrame > ledCountAnimationCount ) {
+            countToShow = ledCountAnimationCount;
+        }
+        setStripToShowCountWithColor( countToShow, ledCountAnimationColor );
+
+    }
 
     //////
     ////// HIT ANIMATION
-    if ( animationType == ANIMATION_HIT ) {
+    else if ( animationType == ANIMATION_HIT ) {
 
         if (animationFrame == 0 || animationFrame == 2) {
             for (int i = 0; i < G_LED_COUNT; i++) {
@@ -66,7 +78,13 @@ void BLTarget::loop() {
             strip->show();
         }
         else {
-            syncStripToHitCount();
+            //syncStripToHitCount();
+            for (int i = 0; i < G_LED_COUNT; i++) {
+                strip->setPixelColor(i, strip->Color(0, 0, 0));
+            }
+            strip->show();
+
+            
         }
 
     }
@@ -75,7 +93,7 @@ void BLTarget::loop() {
 
     //////
     ////// BLANK ANIMATION
-    if ( animationType == ANIMATION_BLANK ) {
+    else if ( animationType == ANIMATION_BLANK ) {
 
         for (int i = 0; i < G_LED_COUNT; i++) {
             strip->setPixelColor(i, strip->Color(0, 0, 0));
@@ -89,7 +107,7 @@ void BLTarget::loop() {
 
     //////
     ////// SEEK ANIMATION
-    if ( animationType == ANIMATION_SEEK ) {
+    else if ( animationType == ANIMATION_SEEK ) {
 
         if (animationFrame > 4) {
             animationFrame = 0;
@@ -177,6 +195,49 @@ bool BLTarget::checkForLongPressSinceLastLoop() {
 }
 
 
+void BLTarget::startLedCountAnimation( int color, int count) {
+
+    if ( count < 0 ) {
+        count = 0;
+    }
+    else if ( count >= G_LED_COUNT) {
+        count = G_LED_COUNT;
+    }
+
+    uint32_t colorCode;
+    if ( color == RED_COLOR ) {
+        colorCode = strip->Color(0, 255, 0);
+    }
+    else if ( color == BLUE_COLOR ) {
+        colorCode = strip->Color(0, 0, 255);
+    }
+    else if ( color == YELLOW_COLOR ) {
+        colorCode = strip->Color(255, 255, 0);
+    }
+    else if ( color == GREEN_COLOR ) {
+        colorCode = strip->Color(255, 0, 0);
+    }
+    else if ( color == ORANGE_COLOR ) {
+        colorCode = strip->Color(165, 255, 0);
+    }
+    else if ( color == PURPLE_COLOR ) {
+        colorCode = strip->Color(0, 128, 128);
+    }
+    else {
+        // unknown color
+        colorCode = strip->Color(50, 50, 50);
+    }
+
+
+    animationFrame = 0;
+    lastFrameTime = millis();
+    animationStepTime = 100;
+    animationType = ANIMATION_COUNT;
+    ledCountAnimationColor = colorCode;
+    ledCountAnimationCount = count;
+
+}
+
 
 void BLTarget::startHitAnimation() {
 
@@ -185,7 +246,7 @@ void BLTarget::startHitAnimation() {
 
     animationFrame = 0;
     lastFrameTime = millis();
-    animationStepTime = 500;
+    animationStepTime = 200;
     animationType = ANIMATION_HIT;
 
     hitCount++;
@@ -220,18 +281,18 @@ void BLTarget::startBlankAnimation() {
 
 
 void BLTarget::syncStripToHitCount() {
+    setStripToShowCountWithColor(hitCount, strip->Color(0,255,0));
+}
 
 
+void BLTarget::setStripToShowCountWithColor(int count, uint32_t color) {
   for (int i = 0; i < G_LED_COUNT; i++) {
-    if ( hitCount >= i+1 ) {
-      strip->setPixelColor(i, strip->Color(0, 255, 0));
+    if ( count >= i+1 ) {
+      strip->setPixelColor(i, color);
     }
     else {
       strip->setPixelColor(i, strip->Color(0, 0, 0));
     }
   }
-
   strip->show();
-
-
 }

@@ -19,6 +19,8 @@ public:
     void startSeekAnimation();
     void startBlankAnimation();
 
+    void startLedCountAnimation( int color, int count);
+
 private:
 
     // the pin for this button
@@ -55,7 +57,12 @@ private:
     int animationType = 0;
     long animationStepTime = 500;
 
+    // count color animation
+    uint32_t ledCountAnimationColor = 0;
+    int ledCountAnimationCount = 0;
+
     void syncStripToHitCount();
+    void setStripToShowCountWithColor(int count, uint32_t color);
 
     
 };

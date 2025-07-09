@@ -20,9 +20,17 @@ private:
 
     int activeTarget;
 
+    int targetsHit = 0;
+    unsigned long roundStartTime = 0;
+
     int gameMode = GAME_MODE_SHOOTING_GALLERY;
 
+    bool showEndOfRoundAnimation = false;
+    int endOfRoundScore = 0;
+
     void selectAndSyncTargets();
+
+    void setupForGameMode(int mode);
 
 };
 
