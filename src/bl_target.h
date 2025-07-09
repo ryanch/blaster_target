@@ -57,6 +57,7 @@ private:
     unsigned long lastFrameTime = 0;
     int animationType = 0;
     long animationStepTime = 500;
+    bool needRepaint = false;
 
     // count color animation
     uint32_t ledCountAnimationColor = 0;

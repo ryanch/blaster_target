@@ -53,7 +53,14 @@ void BLTarget::loop() {
     if (millis() - lastFrameTime >= animationStepTime) {
         animationFrame++;
         lastFrameTime = millis();
+        needRepaint = true;
     }
+
+    // exit early if the last frame is the same as the one we just drew
+    if ( !needRepaint ) {
+        return;
+    }
+    needRepaint = false;
 
     // do animations
 
@@ -226,6 +233,8 @@ void BLTarget::loop() {
     //////
     //////
 
+
+
 }
 
 void BLTarget::onButton() {
@@ -247,6 +256,8 @@ bool BLTarget::checkForLongPressSinceLastLoop() {
 
 void BLTarget::startLedCountAnimation( int color, int count) {
 
+    needRepaint = true;
+    
     if ( count < 0 ) {
         count = 0;
     }
@@ -291,8 +302,7 @@ void BLTarget::startLedCountAnimation( int color, int count) {
 
 void BLTarget::startHitAnimation() {
 
-    Serial.println("start hit");
-
+    needRepaint = true;
 
     animationFrame = 0;
     lastFrameTime = millis();
@@ -308,8 +318,9 @@ void BLTarget::startHitAnimation() {
 
 
 void BLTarget::startSeekAnimation() {
-    Serial.println("start seek");
-    Serial.println(buttonPin);
+
+    needRepaint = true;
+
 
     animationFrame = 0;
     lastFrameTime = millis();
@@ -319,6 +330,10 @@ void BLTarget::startSeekAnimation() {
 }    
  
 void BLTarget::startBlankAnimation() {
+
+    needRepaint = true;
+
+
     animationFrame = 0;
     lastFrameTime = millis();
     animationStepTime = 500;
@@ -327,10 +342,12 @@ void BLTarget::startBlankAnimation() {
 
 
 void BLTarget::syncStripToHitCount() {
+    needRepaint = true;
     setStripToShowCountWithColor(hitCount, strip->Color(0,255,0));
 }
 
 void BLTarget::startColorHuntAnimation() {
+    needRepaint = true;
     animationFrame = 0;
     lastFrameTime = millis();
     animationStepTime = 300;
@@ -339,13 +356,14 @@ void BLTarget::startColorHuntAnimation() {
 
 
 void BLTarget::setStripToShowCountWithColor(int count, uint32_t color) {
-  for (int i = 0; i < G_LED_COUNT; i++) {
-    if ( count >= i+1 ) {
-      strip->setPixelColor(i, color);
-    }
-    else {
-      strip->setPixelColor(i, strip->Color(0, 0, 0));
-    }
-  }
-  strip->show();
+      needRepaint = true;
+        for (int i = 0; i < G_LED_COUNT; i++) {
+            if ( count >= i+1 ) {
+            strip->setPixelColor(i, color);
+            }
+            else {
+            strip->setPixelColor(i, strip->Color(0, 0, 0));
+            }
+        }
+        strip->show();
 }
