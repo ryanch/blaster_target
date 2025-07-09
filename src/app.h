@@ -18,6 +18,8 @@ private:
     BLTarget targetTwo;
     BLTarget targetThree;
 
+    int roundLengthMins = 1;
+
     int proposedGameMode = 0;
 
     int activeTarget;

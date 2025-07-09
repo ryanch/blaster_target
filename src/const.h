@@ -23,7 +23,7 @@
 // dont count this as a game mode
 #define GAME_MODE_SETUP 4
 
-#define SHOOTING_GALLERY_ROUND_TIME (60*1000)
+//#define SHOOTING_GALLERY_ROUND_TIME (60*1000)
 #define END_GAME_SCORE_SHOW_TIME (10*1000)
 
 #define GREEN_COLOR 0

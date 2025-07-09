@@ -60,6 +60,8 @@ void App::syncGameModeSelection() {
         else if ( proposedGameMode == GAME_MODE_COLOR_HUNT ) {
             targetOne.startColorHuntAnimation();
         }
+
+        targetTwo.startLedCountAnimation(RED_COLOR, roundLengthMins);
 }
 
 void App::loop() {
@@ -89,13 +91,19 @@ void App::loop() {
             }
             syncGameModeSelection();
         }
-
+        else if ( targetTwo.checkForPressSinceLastLoop() ) {
+            roundLengthMins++;
+            if ( roundLengthMins > G_LED_COUNT ) {
+                roundLengthMins = 1;
+            }
+            syncGameModeSelection();
+        }
 
     }
 
 
     // see if we are at end of game
-    if (gameMode != GAME_MODE_SETUP && !showEndOfRoundAnimation && millis() - roundStartTime > SHOOTING_GALLERY_ROUND_TIME) {
+    if (gameMode != GAME_MODE_SETUP && !showEndOfRoundAnimation && millis() - roundStartTime > (roundLengthMins*60*1000) ) {
 
         Serial.println("End of Round");
 
@@ -132,7 +140,7 @@ void App::loop() {
 
 
     }
-    else if (gameMode != GAME_MODE_SETUP && millis() - roundStartTime > SHOOTING_GALLERY_ROUND_TIME+END_GAME_SCORE_SHOW_TIME) {
+    else if (gameMode != GAME_MODE_SETUP && millis() - roundStartTime > (roundLengthMins*60*1000)+END_GAME_SCORE_SHOW_TIME) {
         Serial.println("End of showing scoring");
         showEndOfRoundAnimation = false;
         // reset the game
