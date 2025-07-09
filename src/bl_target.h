@@ -18,6 +18,7 @@ public:
     void startHitAnimation();
     void startSeekAnimation();
     void startBlankAnimation();
+    void startColorHuntAnimation();
 
     void startLedCountAnimation( int color, int count);
 

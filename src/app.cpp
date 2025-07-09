@@ -57,6 +57,9 @@ void App::syncGameModeSelection() {
         else if ( proposedGameMode == GAME_MODE_SHOOTING_GALLERY ) {
             targetOne.startSeekAnimation();
         }
+        else if ( proposedGameMode == GAME_MODE_COLOR_HUNT ) {
+            targetOne.startColorHuntAnimation();
+        }
 }
 
 void App::loop() {

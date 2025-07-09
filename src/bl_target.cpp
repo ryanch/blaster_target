@@ -104,6 +104,56 @@ void BLTarget::loop() {
     //////
     //////
 
+    //////
+    ////// Hunt Animation
+    else if ( animationType == ANIMATION_HUNT ) { 
+
+        if (animationFrame > 2) {
+            animationFrame = 0;
+        }
+
+        uint32_t RED = strip->Color(0, 255, 0);
+        uint32_t ORANGE = strip->Color(165, 255, 0);
+        uint32_t BLUE = strip->Color(0, 0, 255);
+        uint32_t BLACK = strip->Color(0, 0, 0);
+
+
+        if (animationFrame == 0) {
+            strip->setPixelColor(0, RED);
+            strip->setPixelColor(1, RED);
+            strip->setPixelColor(2, RED);
+            strip->setPixelColor(3, BLUE);
+            strip->setPixelColor(4, BLUE);
+            strip->setPixelColor(5, ORANGE);
+            strip->setPixelColor(6, ORANGE);
+            strip->setPixelColor(7, ORANGE);
+        }
+        else if (animationFrame == 1) {
+            strip->setPixelColor(0, ORANGE);
+            strip->setPixelColor(1, ORANGE);
+            strip->setPixelColor(2, ORANGE);
+            strip->setPixelColor(3, RED);
+            strip->setPixelColor(4, RED);
+            strip->setPixelColor(5, BLUE);
+            strip->setPixelColor(6, BLUE);
+            strip->setPixelColor(7, BLUE);
+        }
+        else if (animationFrame == 2) {
+            strip->setPixelColor(0, BLUE);
+            strip->setPixelColor(1, BLUE);
+            strip->setPixelColor(2, BLUE);
+            strip->setPixelColor(3, ORANGE);
+            strip->setPixelColor(4, ORANGE);
+            strip->setPixelColor(5, RED);
+            strip->setPixelColor(6, RED);
+            strip->setPixelColor(7, RED);
+        }
+        strip->show();
+
+
+    }
+    //////
+    //////
 
     //////
     ////// SEEK ANIMATION
@@ -269,10 +319,6 @@ void BLTarget::startSeekAnimation() {
 }    
  
 void BLTarget::startBlankAnimation() {
-
-    Serial.println("start blank");
-
-
     animationFrame = 0;
     lastFrameTime = millis();
     animationStepTime = 500;
@@ -282,6 +328,13 @@ void BLTarget::startBlankAnimation() {
 
 void BLTarget::syncStripToHitCount() {
     setStripToShowCountWithColor(hitCount, strip->Color(0,255,0));
+}
+
+void BLTarget::startColorHuntAnimation() {
+    animationFrame = 0;
+    lastFrameTime = millis();
+    animationStepTime = 300;
+    animationType = ANIMATION_HUNT;
 }
 
 
