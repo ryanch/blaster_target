@@ -162,6 +162,45 @@ void BLTarget::loop() {
     //////
     //////
 
+    ////// 
+    ////// pre score animation
+    else if ( animationType == ANIMATION_PRESCORE ){
+        if (animationFrame > 1) {
+            animationFrame = 0;
+        }
+
+        uint32_t BLACK = strip->Color(0, 0, 0);
+        uint32_t WHITE = strip->Color(255, 255, 255);
+
+
+        if (animationFrame == 0) {
+            strip->setPixelColor(0, WHITE);
+            strip->setPixelColor(1, BLACK);
+            strip->setPixelColor(2, WHITE);
+            strip->setPixelColor(3, BLACK);
+            strip->setPixelColor(4, WHITE);
+            strip->setPixelColor(5, BLACK);
+            strip->setPixelColor(6, WHITE);
+            strip->setPixelColor(7, BLACK);
+        }
+        else if (animationFrame == 1) {
+            strip->setPixelColor(0, BLACK);
+            strip->setPixelColor(1, WHITE);
+            strip->setPixelColor(2, BLACK);
+            strip->setPixelColor(3, WHITE);
+            strip->setPixelColor(4, BLACK);
+            strip->setPixelColor(5, WHITE);
+            strip->setPixelColor(6, BLACK);
+            strip->setPixelColor(7, WHITE);
+        }
+     
+
+
+        strip->show();
+    }
+    //////
+    //////
+
     //////
     ////// SEEK ANIMATION
     else if ( animationType == ANIMATION_SEEK ) {
@@ -304,6 +343,18 @@ void BLTarget::startLedCountAnimation( int color, int count) {
 
 }
 
+
+
+void BLTarget::startPreScoreAnimation() {
+    needRepaint = true;
+
+    animationFrame = 0;
+    lastFrameTime = millis();
+    animationStepTime = 300;
+    animationType = ANIMATION_PRESCORE;
+
+
+}
 
 void BLTarget::startHitAnimation() {
 

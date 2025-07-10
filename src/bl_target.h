@@ -22,6 +22,8 @@ public:
 
     void startLedCountAnimation( int color, int count);
 
+    void startPreScoreAnimation();
+
 private:
 
     // the pin for this button
@@ -67,6 +69,7 @@ private:
 
     void syncStripToHitCount();
     void setStripToShowCountWithColor(int count, uint32_t color);
+
 
     
 };

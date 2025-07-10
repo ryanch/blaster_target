@@ -15,16 +15,19 @@
 #define ANIMATION_BLANK 3
 #define ANIMATION_COUNT 4
 #define ANIMATION_HUNT 5
+#define ANIMATION_PRESCORE 6
 
 #define GAME_MODE_SHOOTING_GALLERY 0
 #define GAME_MODE_ALL_TARGETS_ON 1
 #define GAME_MODE_COLOR_HUNT 2
 #define MAX_MODES 3
-// dont count this as a game mode
+// dont count these as a game modes
 #define GAME_MODE_SETUP 4
+#define GAME_MODE_SCORE 5
 
 //#define SHOOTING_GALLERY_ROUND_TIME (60*1000)
-#define END_GAME_SCORE_SHOW_TIME (10*1000)
+#define END_GAME_PRE_SCORE_SHOW_TIME (2*1000)
+#define END_GAME_SCORE_SHOW_TIME (5*1000)
 
 #define GREEN_COLOR 0
 #define BLUE_COLOR 1

@@ -28,13 +28,15 @@ private:
     unsigned long roundStartTime = 0;
 
     int gameMode = GAME_MODE_SHOOTING_GALLERY;
-
-    bool showEndOfRoundAnimation = false;
     int endOfRoundScore = 0;
 
     // hunt target codes
     int activeHuntTarget = 0;
     int activeHuntHighlight = 0;
+
+    // scoring display
+    bool hasShownPreScore = false;
+    bool hasShownScore = false;
 
     void selectAndSyncTargets();
 

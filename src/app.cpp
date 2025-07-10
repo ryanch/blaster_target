@@ -19,14 +19,14 @@ void App::setup() {
 
 void App::setupForGameMode(int mode) {
 
-    Serial.println("set game mode");
+    Serial.print("set game mode");
     Serial.println( mode );
 
-    targetsHit = 0;
-    roundStartTime = millis();
-    showEndOfRoundAnimation = false;
+
 
     if ( mode == GAME_MODE_SHOOTING_GALLERY) {
+        targetsHit = 0;
+        roundStartTime = millis();
         targetOne.startBlankAnimation();
         targetTwo.startBlankAnimation();
         targetThree.startBlankAnimation();
@@ -34,12 +34,16 @@ void App::setupForGameMode(int mode) {
         selectAndSyncTargets();
     }
     else if ( mode == GAME_MODE_ALL_TARGETS_ON) {
+        targetsHit = 0;
+        roundStartTime = millis();
         targetOne.startBlankAnimation();
         targetTwo.startBlankAnimation();
         targetThree.startBlankAnimation();
         gameMode = GAME_MODE_ALL_TARGETS_ON;
     }
     else if ( mode == GAME_MODE_SETUP ) {
+        targetsHit = 0;
+        roundStartTime = millis();
         proposedGameMode = 0;
         targetTwo.startBlankAnimation();
         targetThree.startBlankAnimation();
@@ -47,12 +51,22 @@ void App::setupForGameMode(int mode) {
         syncGameModeSelection();
     }
     else if ( mode == GAME_MODE_COLOR_HUNT ) {
+        targetsHit = 0;
+        roundStartTime = millis();
         gameMode = GAME_MODE_COLOR_HUNT;
         activeHuntTarget = random(0, 3);
         activeHuntHighlight = random(0, 3);
         syncColorHuntAnimations();
     }
-
+    else if ( mode == GAME_MODE_SCORE ) {
+        proposedGameMode = gameMode;
+        gameMode = GAME_MODE_SCORE;
+        hasShownPreScore = false;
+        hasShownScore = false;
+        targetOne.startBlankAnimation();
+        targetTwo.startBlankAnimation();
+        targetThree.startBlankAnimation();
+    }
 }
 
 void App::syncColorHuntAnimations() {
@@ -138,6 +152,7 @@ void App::loop() {
     }
 
 
+    /// check if we are in setup mode
     if ( gameMode == GAME_MODE_SETUP ) {
         if ( targetThree.checkForPressSinceLastLoop() ) {
             // exit setup mode
@@ -158,55 +173,66 @@ void App::loop() {
             }
             syncGameModeSelection();
         }
-
+        return;
     }
 
 
-    // see if we are at end of game
-    if (gameMode != GAME_MODE_SETUP && !showEndOfRoundAnimation && millis() - roundStartTime > (roundLengthMins*60*1000) ) {
-
-        Serial.println("End of Round");
-
-        showEndOfRoundAnimation = true;
-        endOfRoundScore = targetsHit;
-
-
-        int colorCode = 0;
-        if ( targetsHit <= 24 ) {
-            colorCode = 0;
+    // see if we are in a game mode and the game has ended
+    if ( gameMode != GAME_MODE_SETUP && gameMode != GAME_MODE_SCORE ) {
+        if ( millis() - roundStartTime > (roundLengthMins*60*1000) ) {
+            setupForGameMode( GAME_MODE_SCORE );
         }
-        else if ( targetsHit <= 24*2 ) {
-            colorCode = 1;
-        }
-        else if ( targetsHit <= 24*3 ) {
-            colorCode = 2;
-        }
-        else if ( targetsHit <= 24*4 ) {
-            colorCode = 3;
-        }
-        else if ( targetsHit <= 24*5 ) {
-            colorCode = 4;
-        }
-        else if ( targetsHit <= 24*6 ) {
-            colorCode = 5;
-        }
-
-        // now turn the score into a score that is based on a number from 0 to 24
-        int adjustedScore = endOfRoundScore - (24*colorCode);
-
-        targetOne.startLedCountAnimation( colorCode, adjustedScore );
-        targetTwo.startLedCountAnimation( colorCode, adjustedScore-8 );
-        targetThree.startLedCountAnimation( colorCode, adjustedScore-16 );
-
-
-    }
-    else if (gameMode != GAME_MODE_SETUP && millis() - roundStartTime > (roundLengthMins*60*1000)+END_GAME_SCORE_SHOW_TIME) {
-        Serial.println("End of showing scoring");
-        showEndOfRoundAnimation = false;
-        // reset the game
-        setupForGameMode(gameMode);
     }
 
+
+
+
+    if ( gameMode == GAME_MODE_SCORE ) {
+        // if we have not shown pre score yet, show that
+        if ( !hasShownPreScore ) {
+            targetOne.startPreScoreAnimation();
+            targetTwo.startPreScoreAnimation();
+            targetThree.startPreScoreAnimation();
+            hasShownPreScore = true;
+        }
+        // if we have been showing pre score long enough, now show the score
+        else if ( !hasShownScore && millis() - roundStartTime > (roundLengthMins*60*1000) + END_GAME_PRE_SCORE_SHOW_TIME ) {
+            hasShownScore = true;
+            endOfRoundScore = targetsHit;
+
+
+            int colorCode = 0;
+            if ( targetsHit <= 24 ) {
+                colorCode = 0;
+            }
+            else if ( targetsHit <= 24*2 ) {
+                colorCode = 1;
+            }
+            else if ( targetsHit <= 24*3 ) {
+                colorCode = 2;
+            }
+            else if ( targetsHit <= 24*4 ) {
+                colorCode = 3;
+            }
+            else if ( targetsHit <= 24*5 ) {
+                colorCode = 4;
+            }
+            else if ( targetsHit <= 24*6 ) {
+                colorCode = 5;
+            }
+
+            // now turn the score into a score that is based on a number from 0 to 24
+            int adjustedScore = endOfRoundScore - (24*colorCode);
+
+            targetOne.startLedCountAnimation( colorCode, adjustedScore );
+            targetTwo.startLedCountAnimation( colorCode, adjustedScore-8 );
+            targetThree.startLedCountAnimation( colorCode, adjustedScore-16 );
+        }
+        // if we have shown the end game score long enough, then exit back to previous mode
+        else if ( millis() - roundStartTime > (roundLengthMins*60*1000) + END_GAME_PRE_SCORE_SHOW_TIME + END_GAME_SCORE_SHOW_TIME ) {
+            setupForGameMode(proposedGameMode);
+        }
+    }
 
     // color hunt mode
     else if ( gameMode == GAME_MODE_COLOR_HUNT ) {
