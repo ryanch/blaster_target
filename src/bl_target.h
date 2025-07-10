@@ -63,6 +63,8 @@ private:
     uint32_t ledCountAnimationColor = 0;
     int ledCountAnimationCount = 0;
 
+
+
     void syncStripToHitCount();
     void setStripToShowCountWithColor(int count, uint32_t color);
 

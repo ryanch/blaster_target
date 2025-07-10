@@ -32,6 +32,10 @@ private:
     bool showEndOfRoundAnimation = false;
     int endOfRoundScore = 0;
 
+    // hunt target codes
+    int activeHuntTarget = 0;
+    int activeHuntHighlight = 0;
+
     void selectAndSyncTargets();
 
     void setupForGameMode(int mode);
@@ -39,6 +43,8 @@ private:
 
 
     void syncGameModeSelection();
+
+    void syncColorHuntAnimations();
 
 };
 

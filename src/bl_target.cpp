@@ -256,6 +256,11 @@ bool BLTarget::checkForLongPressSinceLastLoop() {
 
 void BLTarget::startLedCountAnimation( int color, int count) {
 
+    Serial.print( "start led count animation " );
+    Serial.print( color );
+    Serial.print( " count ");
+    Serial.println( count );
+
     needRepaint = true;
     
     if ( count < 0 ) {

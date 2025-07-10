@@ -13,13 +13,14 @@ void App::setup() {
     randomSeed(analogRead(0));
 
     //selectAndSyncTargets();
-    setupForGameMode(GAME_MODE_SHOOTING_GALLERY);
+    setupForGameMode(GAME_MODE_SETUP);
 }
 
 
 void App::setupForGameMode(int mode) {
 
     Serial.println("set game mode");
+    Serial.println( mode );
 
     targetsHit = 0;
     roundStartTime = millis();
@@ -45,6 +46,65 @@ void App::setupForGameMode(int mode) {
         gameMode = GAME_MODE_SETUP;
         syncGameModeSelection();
     }
+    else if ( mode == GAME_MODE_COLOR_HUNT ) {
+        gameMode = GAME_MODE_COLOR_HUNT;
+        activeHuntTarget = random(0, 3);
+        activeHuntHighlight = random(0, 3);
+        syncColorHuntAnimations();
+    }
+
+}
+
+void App::syncColorHuntAnimations() {
+
+    targetOne.startBlankAnimation();
+    targetTwo.startBlankAnimation();
+    targetThree.startBlankAnimation();
+
+    // adjust the target
+    int targetAdvance = random(1, 3);
+
+    while ( targetAdvance > 0 ) {
+
+        activeHuntTarget++;
+
+        if ( activeHuntTarget > 2 ) {
+            activeHuntTarget = 0;
+        }
+
+        targetAdvance--;
+    }
+
+    // adjust the highlight
+    activeHuntHighlight = random(0, 3);
+
+    Serial.print( "setup hunt for target" );
+    Serial.print( activeHuntTarget );
+    Serial.print( " with color on target" );
+    Serial.println( activeHuntHighlight );
+
+    BLTarget *highlightTarget;
+    if ( activeHuntHighlight == 0 ) {
+        highlightTarget = &targetOne;
+    }
+    else if ( activeHuntHighlight == 1 ) {
+        highlightTarget = &targetTwo;
+    }
+    else {
+        highlightTarget = &targetThree;
+    }
+
+    // set the color based on the active target
+    if ( activeHuntTarget  == 0 ) {
+        highlightTarget->startLedCountAnimation( BLUE_COLOR, 8 );
+    }
+    else if ( activeHuntTarget  == 1 ) {
+        highlightTarget->startLedCountAnimation( RED_COLOR, 8 );
+    }
+    else {
+        highlightTarget->startLedCountAnimation( ORANGE_COLOR, 8 );
+    }
+
 
 }
 
@@ -86,7 +146,7 @@ void App::loop() {
         else if ( targetOne.checkForPressSinceLastLoop() ) {
             // goto next game mode
             proposedGameMode++;
-            if ( proposedGameMode >= MAX_MODES ) {
+            if ( proposedGameMode > MAX_MODES ) {
                 proposedGameMode = 0;
             }
             syncGameModeSelection();
@@ -148,6 +208,24 @@ void App::loop() {
     }
 
 
+    // color hunt mode
+    else if ( gameMode == GAME_MODE_COLOR_HUNT ) {
+
+        // check if we have targets hit
+        if ( activeHuntTarget == 0 && targetOne.checkForPressSinceLastLoop() ) {
+            targetsHit++;
+            syncColorHuntAnimations();
+        }
+        else if ( activeHuntTarget == 1 && targetTwo.checkForPressSinceLastLoop() ) {
+            targetsHit++;
+            syncColorHuntAnimations();
+        }
+        else if ( activeHuntTarget == 2 && targetThree.checkForPressSinceLastLoop() ) {
+            targetsHit++;
+            syncColorHuntAnimations();
+        }
+
+    }
 
 
     /// shooting gallery mode
