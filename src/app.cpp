@@ -179,7 +179,7 @@ void App::loop() {
 
     // see if we are in a game mode and the game has ended
     if ( gameMode != GAME_MODE_SETUP && gameMode != GAME_MODE_SCORE ) {
-        if ( millis() - roundStartTime > (roundLengthMins*60*1000) ) {
+        if ( millis() - roundStartTime > (roundLengthMins*ONE_MINUTE) ) {
             setupForGameMode( GAME_MODE_SCORE );
         }
     }
@@ -196,7 +196,8 @@ void App::loop() {
             hasShownPreScore = true;
         }
         // if we have been showing pre score long enough, now show the score
-        else if ( !hasShownScore && millis() - roundStartTime > (roundLengthMins*60*1000) + END_GAME_PRE_SCORE_SHOW_TIME ) {
+        else if ( !hasShownScore && millis() - roundStartTime > (roundLengthMins*ONE_MINUTE) + END_GAME_PRE_SCORE_SHOW_TIME ) {
+            
             hasShownScore = true;
             endOfRoundScore = targetsHit;
 
@@ -224,12 +225,35 @@ void App::loop() {
             // now turn the score into a score that is based on a number from 0 to 24
             int adjustedScore = endOfRoundScore - (24*colorCode);
 
-            targetOne.startLedCountAnimation( colorCode, adjustedScore );
-            targetTwo.startLedCountAnimation( colorCode, adjustedScore-8 );
-            targetThree.startLedCountAnimation( colorCode, adjustedScore-16 );
+            // check if they are in the first tier
+            if ( targetsHit <= 24 ) {
+                targetOne.startLedCountAnimation( colorCode, adjustedScore );
+                targetTwo.startLedCountAnimation( colorCode, adjustedScore-8 );
+                targetThree.startLedCountAnimation( colorCode, adjustedScore-16 );
+            }
+            // check if they made it into next tier, but just barely
+            // if so show, the last tier colors as a reward
+            else if ( adjustedScore <= 8 ) {
+                targetOne.startLedCountAnimation( colorCode-1, 8 );
+                targetTwo.startLedCountAnimation( colorCode-1, 8 );
+                targetThree.startLedCountAnimation( colorCode, adjustedScore );
+            }
+            // check if they made it to the middle of the next tier
+            else if ( adjustedScore <= 16 ) {
+                targetOne.startLedCountAnimation( colorCode-1, 8 );
+                targetTwo.startLedCountAnimation( colorCode, 8 );
+                targetThree.startLedCountAnimation( colorCode, adjustedScore-8 );
+            }
+            else {
+                targetOne.startLedCountAnimation( colorCode, 8 );
+                targetTwo.startLedCountAnimation( colorCode, 8 );
+                targetThree.startLedCountAnimation( colorCode, adjustedScore-16 );
+            }
+
+
         }
         // if we have shown the end game score long enough, then exit back to previous mode
-        else if ( millis() - roundStartTime > (roundLengthMins*60*1000) + END_GAME_PRE_SCORE_SHOW_TIME + END_GAME_SCORE_SHOW_TIME ) {
+        else if ( millis() - roundStartTime > (roundLengthMins*ONE_MINUTE) + END_GAME_PRE_SCORE_SHOW_TIME + END_GAME_SCORE_SHOW_TIME ) {
             setupForGameMode(proposedGameMode);
         }
     }
