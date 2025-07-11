@@ -201,6 +201,57 @@ void BLTarget::loop() {
     //////
     //////
 
+    //// Pre game Animation
+    else if (animationType == ANIMATION_PREGAME ) {
+
+        uint32_t RED = strip->Color(0, 255, 0);
+        uint32_t BLACK = strip->Color(0, 0, 0);
+
+        if (animationFrame == 0) {
+            strip->setPixelColor(0, RED);
+            strip->setPixelColor(1, BLACK);
+            strip->setPixelColor(2, BLACK);
+            strip->setPixelColor(3, BLACK);
+            strip->setPixelColor(4, BLACK);
+            strip->setPixelColor(5, BLACK);
+            strip->setPixelColor(6, BLACK);
+            strip->setPixelColor(7, RED);
+        }
+        else if (animationFrame == 1) {
+            strip->setPixelColor(0, RED);
+            strip->setPixelColor(1, RED);
+            strip->setPixelColor(2, BLACK);
+            strip->setPixelColor(3, BLACK);
+            strip->setPixelColor(4, BLACK);
+            strip->setPixelColor(5, BLACK);
+            strip->setPixelColor(6, RED);
+            strip->setPixelColor(7, RED);
+        }
+        else if (animationFrame == 2) {
+            strip->setPixelColor(0, RED);
+            strip->setPixelColor(1, RED);
+            strip->setPixelColor(2, RED);
+            strip->setPixelColor(3, BLACK);
+            strip->setPixelColor(4, BLACK);
+            strip->setPixelColor(5, RED);
+            strip->setPixelColor(6, RED);
+            strip->setPixelColor(7, RED);
+        }
+        else {
+            strip->setPixelColor(0, RED);
+            strip->setPixelColor(1, RED);
+            strip->setPixelColor(2, RED);
+            strip->setPixelColor(3, RED);
+            strip->setPixelColor(4, RED);
+            strip->setPixelColor(5, RED);
+            strip->setPixelColor(6, RED);
+            strip->setPixelColor(7, RED);
+        }
+        strip->show();
+    }
+    //////
+    //////
+
     //////
     ////// SEEK ANIMATION
     else if ( animationType == ANIMATION_SEEK ) {
@@ -292,6 +343,15 @@ bool BLTarget::checkForLongPressSinceLastLoop() {
     return longPressSinceLastLoop;
 }
 
+
+void BLTarget::startPreGameAnimation() {
+    needRepaint = true;
+    animationFrame = 0;
+    lastFrameTime = millis();
+    animationStepTime = 200;
+    animationType = ANIMATION_PREGAME;
+
+}
 
 void BLTarget::startLedCountAnimation( int color, int count) {
 

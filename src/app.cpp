@@ -19,7 +19,27 @@ void App::setup() {
 
 void App::setupForGameMode(int mode) {
 
-    Serial.print("set game mode");
+    Serial.print("set game mode ");
+    Serial.println( mode );
+
+    if ( mode == GAME_MODE_SCORE || mode == GAME_MODE_SETUP ) {
+        setupForGameModeHelper(mode);
+        return;
+    }
+
+    actualGameMode = mode;
+    gameMode = GAME_MODE_PRE_SCORE;
+    roundStartTime = millis();
+
+    targetOne.startPreGameAnimation();
+    targetTwo.startPreGameAnimation();
+    targetThree.startPreGameAnimation();
+
+}
+
+void App::setupForGameModeHelper(int mode) {
+
+    Serial.print("real set game mode");
     Serial.println( mode );
 
 
@@ -140,6 +160,7 @@ void App::syncGameModeSelection() {
 
 void App::loop() {
 
+    delay(10); 
 
     // update all targets
     targetOne.loop();
@@ -178,7 +199,7 @@ void App::loop() {
 
 
     // see if we are in a game mode and the game has ended
-    if ( gameMode != GAME_MODE_SETUP && gameMode != GAME_MODE_SCORE ) {
+    if ( gameMode != GAME_MODE_SETUP && gameMode != GAME_MODE_SCORE && gameMode != GAME_MODE_PRE_SCORE ) {
         if ( millis() - roundStartTime > (roundLengthMins*ONE_MINUTE) ) {
             setupForGameMode( GAME_MODE_SCORE );
         }
@@ -186,8 +207,16 @@ void App::loop() {
 
 
 
+    if (gameMode == GAME_MODE_PRE_SCORE ) {
 
-    if ( gameMode == GAME_MODE_SCORE ) {
+        // see if we can exit pre-game mode
+        if ( millis() - roundStartTime > PRE_GAME_ANIMATION_TIME ) {
+            setupForGameModeHelper( actualGameMode );
+        }
+
+
+    }
+    else if ( gameMode == GAME_MODE_SCORE ) {
         // if we have not shown pre score yet, show that
         if ( !hasShownPreScore ) {
             targetOne.startPreScoreAnimation();

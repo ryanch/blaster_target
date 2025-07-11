@@ -38,10 +38,13 @@ private:
     bool hasShownPreScore = false;
     bool hasShownScore = false;
 
+    // pre-game mode
+    int actualGameMode = 0;
+
     void selectAndSyncTargets();
 
     void setupForGameMode(int mode);
-
+    void setupForGameModeHelper(int mode);
 
 
     void syncGameModeSelection();

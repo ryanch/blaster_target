@@ -24,6 +24,8 @@ public:
 
     void startPreScoreAnimation();
 
+    void startPreGameAnimation();
+
 private:
 
     // the pin for this button
