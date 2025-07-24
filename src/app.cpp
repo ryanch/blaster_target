@@ -4,11 +4,12 @@
 #include <Adafruit_NeoPixel.h>
 
 void App::setup() {
-
+    Serial.begin(9600);
     Serial.println("App Setup");
-    targetOne.setup(25,2);
-    targetTwo.setup(33, 4);
-    targetThree.setup(32, 26);
+    // SWITCH / LED
+    targetOne.setup(25,2); // Left and Blue  
+    targetTwo.setup(33, 4); // Middel and Red
+    targetThree.setup(32, 26); // Right and Orange
 
     randomSeed(analogRead(0));
 

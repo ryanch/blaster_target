@@ -10,7 +10,8 @@ void BLTarget::setup(int pin, int ledPin) {
     strip->setBrightness(BRIGHTNESS);
 
     buttonPin = pin;
-    pinMode(buttonPin, INPUT_PULLUP);
+    // not needed with analog read
+    // pinMode(buttonPin, INPUT_PULLUP);
 }
 
 
@@ -22,9 +23,89 @@ void BLTarget::loop() {
     pressSinceLastLoop = false;
     longPressSinceLastLoop = false;
 
-    // read the button
-    currentState = digitalRead(buttonPin);
 
+    int pValue = analogRead( buttonPin );
+    if (pValue < PIEZO_SENSE ) {
+        currentState = LOW;
+    }
+    else {
+
+        Serial.print("Read button ");
+        Serial.print(buttonPin);
+        Serial.print(" pValue " );
+        Serial.println( pValue);
+
+        currentState = HIGH;
+    }
+
+    if ( currentState == lastFlickerableState ) {
+        // do nothing
+        // Serial.println( "Ignored Duplicate Input" );
+    }
+    else {
+        // we have changed to a new state
+        // if enough time has past since the last state change
+        if ((millis() - lastDebounceTime) > DEBOUNCE_DELAY) {
+            lastDebounceTime = millis();
+            lastFlickerableState = currentState;
+            if (currentState == HIGH ) {
+                onButton();
+            }
+        }
+        else {
+            // not enough time has passed since the last state change.
+            // do nothing
+            Serial.println( "Debounced Input" );
+        }
+    }
+
+
+    // read the button 
+    //currentState = digitalRead(buttonPin);
+
+
+    /*
+    int pValue = analogRead( buttonPin );
+    if (pValue < PIEZO_SENSE ) {
+        currentState = LOW;
+    }
+    else {
+
+        Serial.print("Read button ");
+        Serial.print(buttonPin);
+        Serial.print(" pValue " );
+        Serial.println( pValue);
+
+        currentState = HIGH;
+    }
+
+
+    
+    // de-bounce
+    if (currentState != lastFlickerableState) {
+        lastDebounceTime = millis();
+        lastFlickerableState = currentState;
+    }
+
+    // determine if we actually got a press
+    if ((millis() - lastDebounceTime) > DEBOUNCE_DELAY) {
+        if (lastSteadyState != currentState) {
+            lastSteadyState = currentState;
+            if (currentState == HIGH) {
+                onButton();
+            }
+        }
+    }
+    */
+
+
+    /*
+    if ( currentState == HIGH ) {
+        onButton();
+    }
+    */
+
+    /*
     // de-bounce
     if (currentState != lastFlickerableState) {
         lastDebounceTime = millis();
@@ -47,6 +128,7 @@ void BLTarget::loop() {
         }
         }
     }
+    */
 
 
     // goto next animation frame

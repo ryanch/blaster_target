@@ -4,11 +4,13 @@
 
 #define G_LED_COUNT 8
 
-#define DEBOUNCE_DELAY 50
+#define PIEZO_SENSE 50
+
+#define DEBOUNCE_DELAY 10
 
 #define LONG_BUTTON_PRESS_MS 4000
 
-#define BRIGHTNESS 250
+#define BRIGHTNESS 80
 
 #define ANIMATION_HIT 1
 #define ANIMATION_SEEK 2
